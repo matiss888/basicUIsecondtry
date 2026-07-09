@@ -1,5 +1,7 @@
 package lv.bootcamp.shelter.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lv.bootcamp.shelter.dto.AnimalCreateRequest;
 import lv.bootcamp.shelter.dto.AnimalResponse;
@@ -19,15 +21,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/animals")
+@Tag(name = "All animals")
 public class AnimalApiController {
 
     private final AnimalService animalService;
 
+    @Operation(summary = "List all animals")
     @GetMapping
     public List<AnimalResponse> findAll() {
         return animalService.findAll();
     }
 
+    @Operation(summary = "Find animal by id")
     @GetMapping("/{id}")
     public ResponseEntity<AnimalResponse> findById(@PathVariable Long id) {
         return animalService.findById(id)
@@ -41,6 +46,7 @@ public class AnimalApiController {
      * calling it repeatedly (e.g. with/without a token, or with a ROLE_USER token)
      * has no side effects, unlike {@code POST /api/animals}.
      */
+    @Operation(summary = "List all adopted animals")
     @GetMapping("/adopted")
     public List<AnimalResponse> findAdopted() {
         return animalService.findAdopted();
@@ -49,6 +55,7 @@ public class AnimalApiController {
     /**
      * Creates a new animal. Restricted to ROLE_ADMIN — see SecurityConfig.
      */
+    @Operation(summary = "Create new animal")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AnimalResponse create(@RequestBody @Valid AnimalCreateRequest request) {
@@ -59,6 +66,7 @@ public class AnimalApiController {
      * Adopts an animal as the currently logged-in user. Restricted to ROLE_USER
      * (not ROLE_ADMIN) — see SecurityConfig.
      */
+    @Operation(summary = "Adopt an animal")
     @PostMapping("/{id}/adopt")
     public ResponseEntity<AnimalResponse> adopt(@PathVariable Long id, Authentication authentication) {
         return animalService.adopt(id, authentication.getName())
