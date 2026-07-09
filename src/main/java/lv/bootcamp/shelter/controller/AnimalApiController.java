@@ -1,6 +1,7 @@
 package lv.bootcamp.shelter.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lv.bootcamp.shelter.dto.AnimalCreateRequest;
@@ -27,12 +28,15 @@ public class AnimalApiController {
     private final AnimalService animalService;
 
     @Operation(summary = "List all animals")
+    @ApiResponse(responseCode = "200", description = "Animals shown successfully")
     @GetMapping
     public List<AnimalResponse> findAll() {
         return animalService.findAll();
     }
 
+
     @Operation(summary = "Find animal by id")
+    @ApiResponse(responseCode = "200", description = "Animal found successfully")
     @GetMapping("/{id}")
     public ResponseEntity<AnimalResponse> findById(@PathVariable Long id) {
         return animalService.findById(id)
@@ -47,6 +51,7 @@ public class AnimalApiController {
      * has no side effects, unlike {@code POST /api/animals}.
      */
     @Operation(summary = "List all adopted animals")
+    @ApiResponse(responseCode = "200", description = "Animals who were adopted were found successfully")
     @GetMapping("/adopted")
     public List<AnimalResponse> findAdopted() {
         return animalService.findAdopted();
@@ -56,6 +61,7 @@ public class AnimalApiController {
      * Creates a new animal. Restricted to ROLE_ADMIN — see SecurityConfig.
      */
     @Operation(summary = "Create new animal")
+    @ApiResponse(responseCode = "201", description = "Animal added successfully")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AnimalResponse create(@RequestBody @Valid AnimalCreateRequest request) {
@@ -67,6 +73,7 @@ public class AnimalApiController {
      * (not ROLE_ADMIN) — see SecurityConfig.
      */
     @Operation(summary = "Adopt an animal")
+    @ApiResponse(responseCode = "200", description = "Animal adopted successfully")
     @PostMapping("/{id}/adopt")
     public ResponseEntity<AnimalResponse> adopt(@PathVariable Long id, Authentication authentication) {
         return animalService.adopt(id, authentication.getName())
